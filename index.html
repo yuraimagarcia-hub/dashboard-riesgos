@@ -1,0 +1,431 @@
+<!-- Chosen Palette: Warm Neutrals (bg-gray-50/bg-white) with Red/Amber (bg-red-600, text-red-600) for alerts and Blue (bg-blue-700) for navigation/actions. -->
+<!-- Application Structure Plan: A tabbed SPA with 4 sections: Resumen (Home/Exec View), Riesgos (Problem/Brechas), Plan (Solution/KPIs), and Contexto (Methodology). This structure is chosen over a linear report as it allows non-linear exploration, which is ideal for different stakeholders (e.g., execs stay on Resumen, tech leads go to Riesgos/Plan). Navigation is handled by JS click events toggling 'hidden' classes on content divs. -->
+<!-- Visualization & Content Choices: 1. (Slide 3) 5 Extremo Riesgos -> Goal: Inform/Organize -> Viz: Donut Chart (Chart.js Canvas) categorizing risks (3 App/Dato vs. 2 Infra) -> Interaction: Hover tooltips -> Justification: Quick visual summary of *where* the top risks lie. 2. (Slide 5) 0.0% Test Coverage/BCP -> Goal: Inform/Emphasize -> Viz: Horizontal Bar Chart (Chart.js Canvas) -> Interaction: Static, shows 0 on a 100-scale -> Justification: Visualizing 0% is more impactful than text. 3. (Slide 6) Plan de 3 Fases -> Goal: Organize/Change -> Viz: Timeline Diagram (HTML/Tailwind) -> Interaction: None -> Justification: Clearer than a bullet list for a phased plan. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Riesgos - Grupo Zoom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            border-bottom-color: #2563eb;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        .kpi-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <!-- Encabezado -->
+        <header class="mb-6 pb-4 border-b border-gray-200">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Análisis Interactivo de Riesgos de Ciberseguridad</h1>
+            <p class="text-lg text-gray-600">Grupo Zoom | 27 de octubre de 2025 | Fuente: Informe v1.0</p>
+        </header>
+
+        <!-- Navegación por Pestañas -->
+        <nav class="mb-8">
+            <ul class="flex flex-wrap border-b border-gray-300">
+                <li><button data-tab="resumen" class="nav-link active text-gray-600 py-3 px-4 md:px-6 border-b-2 border-transparent text-base md:text-lg">Resumen</button></li>
+                <li><button data-tab="riesgos" class="nav-link text-gray-600 py-3 px-4 md:px-6 border-b-2 border-transparent text-base md:text-lg">Riesgos y Brechas</button></li>
+                <li><button data-tab="plan" class="nav-link text-gray-600 py-3 px-4 md:px-6 border-b-2 border-transparent text-base md:text-lg">Plan de Mitigación</button></li>
+                <li><button data-tab="contexto" class="nav-link text-gray-600 py-3 px-4 md:px-6 border-b-2 border-transparent text-base md:text-lg">Contexto y Alcance</button></li>
+            </ul>
+        </nav>
+
+        <!-- Contenedor de Páginas -->
+        <main>
+            <!-- ======================= -->
+            <!-- PÁGINA 1: RESUMEN       -->
+            <!-- ======================= -->
+            <div id="page-resumen" data-page="resumen" class="space-y-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Mensaje para la Dirección</h2>
+                    <p class="text-base text-gray-700">La situación actual no solo es un problema de TI, sino un riesgo estratégico. La falta de controles básicos (gestión de credenciales, parches, BCP) y la ausencia de gobernanza (políticas, procesos formales) amenazan la continuidad del negocio, la reputación y el cumplimiento regulatorio.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="kpi-card bg-red-600 text-white p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                        <h3 class="font-semibold text-lg opacity-90">Nivel de Riesgo General</h3>
+                        <p class="text-5xl md:text-6xl font-extrabold tracking-tight">ALTO-CRÍTICO</p>
+                        <p class="text-sm opacity-80 mt-2">(Basado en Sec 8 del Informe)</p>
+                    </div>
+                    <div class="kpi-card bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h3 class="font-semibold text-lg text-gray-700">Riesgos Extremos</h3>
+                        <p class="text-6xl font-extrabold text-red-500">5</p>
+                        <p class="text-sm text-gray-600 mt-2">Requieren contención inmediata.</p>
+                    </div>
+                    <div class="kpi-card bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <h3 class="font-semibold text-lg text-gray-700">Causa Raíz Principal</h3>
+                        <p class="text-4xl font-bold text-amber-600 mt-3">Deuda Técnica</acronym></p>
+                        <p class="text-sm text-gray-600 mt-2">Generada por informalidad histórica.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Próximos Pasos para la Dirección</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="flex items-start bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <span class="text-2xl font-bold text-blue-600 mr-3">1.</span>
+                            <div>
+                                <h4 class="font-semibold text-lg text-blue-800">Aprobar</h4>
+                                <p class="text-sm text-blue-700">El plan de mitigación por fases y asignar recursos para la Fase 1 (Urgente).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <span class="text-2xl font-bold text-blue-600 mr-3">2.</span>
+                            <div>
+                                <h4 class="font-semibold text-lg text-blue-800">Establecer</h4>
+                                <p class="text-sm text-blue-700">Formalmente un Comité de Seguridad para la supervisión ejecutiva del plan.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <span class="text-2xl font-bold text-blue-600 mr-3">3.</span>
+                            <div>
+                                <h4 class="font-semibold text-lg text-blue-800">Monitorear</h4>
+                                <p class="text-sm text-blue-700">El avance semanal de la Fase 1 y los KPIs de reducción de riesgo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ======================= -->
+            <!-- PÁGINA 2: RIESGOS       -->
+            <!-- ======================= -->
+            <div id="page-riesgos" data-page="riesgos" class="hidden space-y-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Hallazgos Críticos y Brechas</h2>
+                    <p class="text-base text-gray-700 mb-6">Esta sección detalla los 5 riesgos más extremos identificados (Sec 6) y las brechas de control fundamentales (Sec 4) que los habilitan. Las visualizaciones muestran la categorización de los riesgos y la falta crítica de controles de desarrollo y continuidad.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 text-center mb-4">Categorías de Riesgos Extremos (N=5)</h3>
+                        <div class="chart-container">
+                            <canvas id="riskDonutChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 text-center mb-4">Brechas Críticas de Control</h3>
+                        <div class="chart-container" style="height: 250px; max-height: 300px;">
+                            <canvas id="brechasBarChart"></canvas>
+                        </div>
+                        <p class="text-sm text-center text-gray-600 mt-4">La cobertura de pruebas en 0.0% (SonarQube) y la falta de pruebas de BCP/DRP son debilidades fundamentales (Sec 5).</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 px-2 md:px-0">Tabla de Riesgos Extremos (Sec 6)</h3>
+                    <table class="w-full min-w-[700px] text-left">
+                        <thead class="bg-gray-100 border-b border-gray-300">
+                            <tr>
+                                <th class="p-3 font-semibold text-gray-700">Riesgo (Resumen)</th>
+                                <th class="p-3 font-semibold text-gray-700">Activo Afectado</th>
+                                <th class="p-3 font-semibold text-gray-700">Vulnerabilidad Clave</th>
+                                <th class="p-3 font-semibold text-gray-700">Impacto en Negocio</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="bg-red-50 hover:bg-red-100">
+                                <td class="p-3 font-medium">Credenciales Expuestas</td>
+                                <td class="p-3">Código Fuente, BDs</td>
+                                <td class="p-3 font-semibold">Credenciales "Hardcoded"</td>
+                                <td class="p-3">Pérdida financiera, Fuga de datos</td>
+                            </tr>
+                            <tr class="bg-red-50 hover:bg-red-100">
+                                <td class="p-3 font-medium">Inyección SQL (SQLi)</td>
+                                <td class="p-3">APPs (Orinoco), BDs</td>
+                                <td class="p-3 font-semibold">Falta de sanitización</td>
+                                <td class="p-3">Fraude, Corrupción de datos</td>
+                            </tr>
+                            <tr class="bg-orange-50 hover:bg-orange-100">
+                                <td class="p-3 font-medium">Falla Operativa por EOL/SAN</td>
+                                <td class="p-3">Infra. Core, SAN</td>
+                                <td class="p-3 font-semibold">SAN casi lleno, SO Obsoletos</td>
+                                <td class="p-3">Interrupción total</td>
+                            </tr>
+                            <tr class="bg-red-50 hover:bg-red-100">
+                                <td class="p-3 font-medium">Interceptación de Datos (MITM)</td>
+                                <td class="p-3">Comunicaciones APPs</td>
+                                <td class="p-3 font-semibold">Validación SSL/TLS desactivada</td>
+                                <td class="p-3">Fuga de datos sensibles</td>
+                            </tr>
+                            <tr class="bg-orange-50 hover:bg-orange-100">
+                                <td class="p-3 font-medium">Compromiso por SO/Hardware EOL</td>
+                                <td class="p-3">Servidores, Firewall</td>
+                                <td class="p-3 font-semibold">Firewall Core y SO EOL</td>
+                                <td class="p-3">Exposición crítica</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Activos Críticos y Brechas de Control Adicionales (Sec 4 y 5)</h3>
+                     <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li><span class="font-semibold">Activos Críticos:</span> APPs (Orinoco, Cinaruco), Bases de Datos, Directorio Activo, Red Core, SAN.</li>
+                        <li><span class="font-semibold text-red-600">Gobernanza de Activos:</span> Deficiente. Inventarios incompletos y desactualizados.</li>
+                        <li><span class="font-semibold text-red-600">Desarrollo Seguro (SSDLC):</span> Inexistente. Deuda técnica masiva.</li>
+                        <li><span class="font-semibold text-red-600">Controles de Infraestructura:</span> Backups no cifrados y sin pruebas de restauración.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ======================= -->
+            <!-- PÁGINA 3: PLAN          -->
+            <!-- ======================= -->
+            <div id="page-plan" data-page="plan" class="hidden space-y-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Plan de Acción y Medición</h2>
+                    <p class="text-base text-gray-700 mb-6">El tratamiento principal es la Mitigación (Sec 6). Esta sección describe el plan de acción inmediato (Fase 1) necesario para contener las amenazas más críticas, el plan por fases completo (Sec 7) y los indicadores clave (KPIs) para medir el éxito.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Plan de Acción a Alto Nivel (Fases - Sec 7)</h3>
+                    <!-- Timeline con HTML/Tailwind -->
+                    <div class="relative pl-6 border-l-2 border-blue-500 space-y-10">
+                        <!-- Fase 1 -->
+                        <div class="relative">
+                            <div class="absolute -left-8 w-4 h-4 bg-blue-700 rounded-full top-1"></div>
+                            <h4 class="text-lg font-semibold text-blue-700">Fase 1 (0-30 días): Contención de Riesgos Críticos</h4>
+                            <p class="text-gray-600">Enfoque técnico urgente en EOL, credenciales, SQLi, SAN y SSL.</p>
+                        </div>
+                        <!-- Fase 2 -->
+                        <div class="relative">
+                            <div class="absolute -left-8 w-4 h-4 bg-blue-500 rounded-full top-1"></div>
+                            <h4 class="text-lg font-semibold text-blue-700">Fase 2 (30-90 días): Mitigación de Riesgos Altos</h4>
+                            <p class="text-gray-600">Formalizar gestión de incidentes/cambios, Diagnóstico LOPD, Gestión de Identidad.</p>
+                        </div>
+                        <!-- Fase 3 -->
+                        <div class="relative">
+                            <div class="absolute -left-8 w-4 h-4 bg-blue-300 rounded-full top-1"></div>
+                            <h4 class="text-lg font-semibold text-blue-700">Fase 3 (3-6 meses): Mejora Continua</h4>
+                            <p class="text-gray-600">Pruebas BCP/DRP, Implementar controles LOPD, Pruebas de código, Concienciación formal.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Acciones de Alto Impacto (Fase 1)</h3>
+                        <ul class="list-decimal list-inside space-y-3 text-gray-700">
+                            <li><span class="font-semibold">Contención de Infraestructura Crítica:</span> Aislar/Reemplazar EOL, Liberar SAN.</li>
+                            <li><span class="font-semibold">Gestión de Secretos:</span> Rotar credenciales expuestas, Implementar Gestor.</li>
+                            <li><span class="font-semibold">Mitigación de Aplicaciones:</span> Habilitar SSL/TLS, Aplicar parches WAF/código para SQLi.</li>
+                            <li><span class="font-semibold">Gobernanza Inicial:</span> Iniciar desarrollo de Políticas Clave, Campaña de concienciación.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">KPIs y Métricas de Éxito</h3>
+                        <ul class="list-disc list-inside space-y-3 text-gray-700">
+                            <li><span class="font-semibold">Reducción de Riesgo:</span> % de vulnerabilidades críticas (EOL, SQLi) remediadas en 30 días.</li>
+                            <li><span class="font-semibold">Madurez:</span> Nivel de Riesgo General reducido de "Alto-Crítico" a "Moderado" (Objetivo: 6 meses).</li>
+                            <li><span class="font-semibold">Resiliencia:</span> % de activos críticos con BCP/DRP probados y funcionales (Objetivo: 90 días).</li>
+                            <li><span class="font-semibold">Gobernanza:</span> % de avance en aprobación de Políticas Clave.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ======================= -->
+            <!-- PÁGINA 4: CONTEXTO      -->
+            <!-- ======================= -->
+            <div id="page-contexto" data-page="contexto" class="hidden space-y-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Alcance, Metodología y Cultura</h2>
+                    <p class="text-base text-gray-700 mb-6">Esta sección provee el contexto del análisis (Sec 2 y 3), incluyendo los activos y procesos evaluados, la metodología utilizada y las observaciones clave sobre la cultura organizacional que actúa como causa raíz de muchos de los riesgos identificados.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Alcance del Análisis (Sec 3)</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2">
+                            <li><span class="font-semibold">Infraestructura:</span> On-Premise (Miami, La Urbina, Sucursales) y Cloud (GCP).</li>
+                            <li><span class="font-semibold">Activos:</span> Aplicaciones Críticas (Orinoco, Cinaruco, Mi Zoom), Portales Públicos, Código Fuente, Bases de Datos.</li>
+                            <li><span class="font-semibold">Procesos:</span> Gobernanza de TI, Desarrollo de Software, Factor Humano.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Metodología (Sec 2)</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2">
+                            <li>Análisis cualitativo basado en documentación recopilada en los últimos 2 meses.</li>
+                            <li>Alineación conceptual con marcos internacionales:</li>
+                            <ul class="list-disc list-inside ml-6">
+                                <li>ISO/IEC 27005:2022</li>
+                                <li>NIST Cybersecurity Framework (CSF)</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Observaciones de Gobernanza y Cultura (Causa Raíz)</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li><span class="font-semibold">Cultura:</span> La "agilidad vs. informalidad" ha generado una deuda técnica masiva (Sec 2, 8).</li>
+                        <li><span class="font-semibold text-red-600">Gobernanza:</span> Políticas de seguridad inexistentes o no comunicadas (Sec 4).</li>
+                        <li><span class="font-semibold text-red-600">Procesos:</span> Ausencia de procesos formales para gestión de incidentes, cambios, activos y continuidad del negocio (BCP/DRP no probados) (Sec 4).</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Lógica de Navegación por Pestañas ---
+            const navLinks = document.querySelectorAll('.nav-link[data-tab]');
+            const pages = document.querySelectorAll('[data-page]');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const tab = link.getAttribute('data-tab');
+
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    link.classList.add('active');
+
+                    pages.forEach(page => {
+                        if (page.getAttribute('data-page') === tab) {
+                            page.classList.remove('hidden');
+                        } else {
+                            page.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // --- Lógica de Gráficos (se renderizan al cargar) ---
+            
+            // Gráfico 1: Categorías de Riesgos Extremos
+            const riskCtx = document.getElementById('riskDonutChart');
+            if (riskCtx) {
+                new Chart(riskCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Aplicación / Dato (SQLi, Cred., MITM)', 'Infraestructura (EOL, SAN)'],
+                        datasets: [{
+                            label: 'Categoría de Riesgo',
+                            data: [3, 2],
+                            backgroundColor: [
+                                'rgba(239, 68, 68, 0.8)',  // Rojo
+                                'rgba(245, 158, 11, 0.8)' // Ámbar
+                            ],
+                            borderColor: [
+                                'rgba(239, 68, 68, 1)',
+                                'rgba(245, 158, 11, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + ' riesgos';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Gráfico 2: Brechas Críticas de Control
+            const brechasCtx = document.getElementById('brechasBarChart');
+            if (brechasCtx) {
+                new Chart(brechasCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cobertura de Pruebas (SonarQube)', 'Pruebas de BCP/DRP (Restauración)'],
+                        datasets: [{
+                            label: '% de Cumplimiento',
+                            data: [0.0, 0.0],
+                            backgroundColor: 'rgba(220, 38, 38, 0.7)',
+                            borderColor: 'rgba(220, 38, 38, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%'
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': 0.0%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
