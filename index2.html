@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Riesgos - Grupo Zoom</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de fuente (Inter) -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+    <div class="container mx-auto">
+
+        <!-- Encabezado -->
+        <header class="mb-6 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Dashboard de Riesgos de Ciberseguridad</h1>
+                <p class="text-gray-600">Grupo Zoom | Estado al 27 de octubre de 2025 | Fuente: Informe v1.0</p>
+            </div>
+            <div class="text-sm text-gray-700 mt-2 md:mt-0">
+                <span class="font-semibold">Autor:</span> Yuraima Garcia (CISO)
+            </div>
+        </header>
+
+        <!-- Rejilla Principal del Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+            <!-- Fila 1: KPIs Principales -->
+            <div class="md:col-span-1 bg-red-600 text-white p-6 rounded-xl shadow-lg flex flex-col justify-between">
+                <h3 class="font-semibold text-lg opacity-90">Nivel de Riesgo General</h3>
+                <p class="text-6xl font-extrabold tracking-tight">CRÍTICO</p>
+                <p class="text-sm opacity-80 mt-2">(Basado en Sec 8 del Informe)</p>
+            </div>
+
+            <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="font-semibold text-lg text-gray-700">Riesgos Extremos</h3>
+                <p class="text-6xl font-extrabold text-red-500">5</p>
+                <p class="text-sm text-gray-600 mt-2">Requieren contención inmediata.</p>
+            </div>
+
+            <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="font-semibold text-lg text-gray-700">Causa Raíz Principal</h3>
+                <p class="text-3xl font-bold text-amber-600 mt-3">Deuda Técnica</p>
+                <p class="text-sm text-gray-600 mt-2">Generada por informalidad histórica.</p>
+            </div>
+
+            <div class="md:col-span-1 bg-blue-600 text-white p-6 rounded-xl shadow-lg">
+                <h3 class="font-semibold text-lg opacity-90">Acción Prioritaria</h3>
+                <p class="text-3xl font-bold mt-3">Aprobar Fase 1</p>
+                <p class="text-sm opacity-80 mt-2">Plan de contención (0-30 días).</p>
+            </div>
+
+            <!-- Fila 2: Top Riesgos y Plan de Mitigación -->
+            <div class="md:col-span-3 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Top 5 Riesgos Críticos (Nivel Extremo)</h2>
+                <div class="space-y-4">
+                    <!-- Riesgo 1 -->
+                    <div class="border-l-4 border-red-500 pl-4 py-1">
+                        <h4 class="font-semibold text-gray-800">Acceso No Autorizado por Credenciales Expuestas</h4>
+                        <p class="text-sm text-gray-600"><span class="font-medium">Vulnerabilidad:</span> Credenciales "Hardcoded". | <span class="font-medium">Impacto:</span> Fraude, Fuga de datos.</p>
+                    </div>
+                    <!-- Riesgo 2 -->
+                    <div class="border-l-4 border-red-500 pl-4 py-1">
+                        <h4 class="font-semibold text-gray-800">Compromiso de BD por Inyección SQL (SQLi)</h4>
+                        <p class="text-sm text-gray-600"><span class="font-medium">Vulnerabilidad:</span> Falta de sanitización. | <span class="font-medium">Impacto:</span> Fraude, Corrupción de datos.</p>
+                    </div>
+                    <!-- Riesgo 3 -->
+                    <div class="border-l-4 border-red-500 pl-4 py-1">
+                        <h4 class="font-semibold text-gray-800">Falla Operativa por EOL / Capacidad SAN</h4>
+                        <p class="text-sm text-gray-600"><span class="font-medium">Vulnerabilidad:</span> SAN casi lleno, SO Obsoletos. | <span class="font-medium">Impacto:</span> Interrupción total.</p>
+                    </div>
+                    <!-- Riesgo 4 -->
+                    <div class="border-l-4 border-red-500 pl-4 py-1">
+                        <h4 class="font-semibold text-gray-800">Interceptación de Datos (MITM)</h4>
+                        <p class="text-sm text-gray-600"><span class="font-medium">Vulnerabilidad:</span> Validación SSL/TLS desactivada. | <span class="font-medium">Impacto:</span> Fuga de datos sensibles.</p>
+                    </div>
+                    <!-- Riesgo 5 -->
+                    <div class="border-l-4 border-red-500 pl-4 py-1">
+                        <h4 class="font-semibold text-gray-800">Compromiso por SO/Hardware EOL</h4>
+                        <p class="text-sm text-gray-600"><span class="font-medium">Vulnerabilidad:</span> Firewall Core y SO EOL. | <span class="font-medium">Impacto:</span> Ransomware, Exposición.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Plan de Mitigación</h2>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full">FASE 1</span>
+                        <div class="ml-3">
+                            <span class="font-semibold text-sm">Contención (0-30d)</span>
+                            <p class="text-xs text-gray-600">EOL, Credenciales, SQLi, SAN, SSL.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">FASE 2</span>
+                        <div class="ml-3">
+                            <span class="font-semibold text-sm">Mitigación (30-90d)</span>
+                            <p class="text-xs text-gray-600">Gestión Incidentes/Cambios, LOPD, IAM.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex-shrink-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">FASE 3</span>
+                        <div class="ml-3">
+                            <span class="font-semibold text-sm">Mejora (3-6m)</span>
+                            <p class="text-xs text-gray-600">Pruebas BCP/DRP, Controles LOPD.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Fila 3: Brechas y Contexto -->
+            <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-5">Brechas Clave de Controles (Sec 4 y 5)</h2>
+                <div class="space-y-5">
+                    <!-- Brecha 1 -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-base font-medium text-gray-700">Cobertura de Pruebas (SonarQube)</span>
+                            <span class="text-base font-bold text-red-600">0.0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <!-- Se usa 1% para que la barra sea visible, representando 0 -->
+                            <div class="bg-red-500 h-4 rounded-full" style="width: 1%"></div>
+                        </div>
+                    </div>
+                    <!-- Brecha 2 -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-base font-medium text-gray-700">Pruebas de BCP/DRP</span>
+                            <span class="text-base font-bold text-red-600">NO PROBADO</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <div class="bg-red-500 h-4 rounded-full" style="width: 1%"></div>
+                        </div>
+                    </div>
+                     <!-- Brecha 3 -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-base font-medium text-gray-700">Infraestructura Core (EOL)</span>
+                            <span class="text-base font-bold text-amber-600">RIESGO ALTO</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <!-- Representación visual del riesgo, no un % exacto -->
+                            <div class="bg-amber-500 h-4 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Contexto y Alcance (Sec 2 y 3)</h2>
+                <h4 class="font-semibold text-gray-700 mt-3">Metodología</h4>
+                <p class="text-sm text-gray-600">Análisis cualitativo alineado con <span class="font-medium">ISO/IEC 27005:2022</span> y <span class="font-medium">NIST CSF</span>.</p>
+                
+                <h4 class="font-semibold text-gray-700 mt-4">Alcance del Análisis</h4>
+                <ul class="list-disc list-inside text-sm text-gray-600 space-y-1 mt-2">
+                    <li><span class="font-medium">Infraestructura:</span> On-Premise (Miami, La Urbina) y Cloud (GCP).</li>
+                    <li><span class="font-medium">Activos Críticos:</span> APPs (Orinoco, Cinaruco), Código Fuente, BDs.</li>
+                    <li><span class="font-medium">Procesos:</span> Gobernanza TI, Desarrollo (SSDLC) y Factor Humano.</li>
+                </ul>
+            </div>
+
+            <!-- Fila 4: Próximos Pasos -->
+            <div class="md:col-span-4 bg-gray-800 text-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-xl font-bold mb-4">Próximos Pasos para la Dirección</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Paso 1 -->
+                    <div class="flex items-center bg-gray-700 p-4 rounded-lg">
+                        <svg class="w-8 h-8 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-lg">1. Aprobar</h4>
+                            <p class="text-sm opacity-80">Plan de mitigación por fases y asignar recursos para Fase 1 (Urgente).</p>
+                        </div>
+                    </div>
+                    <!-- Paso 2 -->
+                    <div class="flex items-center bg-gray-700 p-4 rounded-lg">
+                        <svg class="w-8 h-8 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-lg">2. Establecer</h4>
+                            <p class="text-sm opacity-80">Formalmente un Comité de Seguridad para la supervisión ejecutiva.</p>
+                        </div>
+                    </div>
+                    <!-- Paso 3 -->
+                    <div class="flex items-center bg-gray-700 p-4 rounded-lg">
+                        <svg class="w-8 h-8 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-lg">3. Monitorear</h4>
+                            <p class="text-sm opacity-80">El avance semanal de la Fase 1 y los KPIs de reducción de riesgo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Fin de la rejilla principal -->
+
+    </div>
+</body>
+</html>
